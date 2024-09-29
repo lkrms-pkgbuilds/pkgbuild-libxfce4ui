@@ -1,0 +1,60 @@
+diff --git a/libxfce4ui/libxfce4ui.symbols b/libxfce4ui/libxfce4ui.symbols
+index 5f5360c..d77883d 100644
+--- a/libxfce4ui/libxfce4ui.symbols
++++ b/libxfce4ui/libxfce4ui.symbols
+@@ -172,6 +172,7 @@ xfce_screensaver_get_type
+ xfce_screensaver_new
+ xfce_screensaver_inhibit
+ xfce_screensaver_lock
++xfce_screensaver_reset
+ #endif
+ #endif
+ 
+diff --git a/libxfce4ui/xfce-screensaver.c b/libxfce4ui/xfce-screensaver.c
+index d2acc07..9e650fe 100644
+--- a/libxfce4ui/xfce-screensaver.c
++++ b/libxfce4ui/xfce-screensaver.c
+@@ -429,11 +429,9 @@ xfce_screensaver_new (void)
+ 
+ 
+ 
+-static gboolean
+-xfce_reset_screen_saver (gpointer user_data)
++gboolean
++xfce_screensaver_reset (XfceScreensaver *saver)
+ {
+-  XfceScreensaver *saver = user_data;
+-
+   TRACE ("entering\n");
+ 
+   /* If we found an interface during the setup, use it */
+@@ -461,6 +459,16 @@ xfce_reset_screen_saver (gpointer user_data)
+ 
+ 
+ 
++static gboolean
++xfce_reset_screen_saver (gpointer user_data)
++{
++  XfceScreensaver *saver = user_data;
++
++  return xfce_screensaver_reset (saver);
++}
++
++
++
+ /**
+  * xfce_screensaver_inhibit:
+  * @saver: the #XfceScreensaver object
+diff --git a/libxfce4ui/xfce-screensaver.h b/libxfce4ui/xfce-screensaver.h
+index 9d77ba5..f923540 100644
+--- a/libxfce4ui/xfce-screensaver.h
++++ b/libxfce4ui/xfce-screensaver.h
+@@ -40,6 +40,8 @@ typedef XfceScreensaver XfceScreenSaver;
+ 
+ XfceScreensaver    *xfce_screensaver_new           (void);
+ 
++gboolean            xfce_screensaver_reset         (XfceScreensaver     *saver);
++
+ void                xfce_screensaver_inhibit       (XfceScreensaver     *saver,
+                                                     gboolean             inhibit);
+ 
